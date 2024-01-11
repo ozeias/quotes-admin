@@ -1,0 +1,7 @@
+# Omakase Ruby styling for Rails
+inherit_gem:
+  rubocop-rails-omakase: rubocop.yml
+
+# Custom styling
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
