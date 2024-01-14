@@ -7,10 +7,13 @@ class CreateAuthors < ActiveRecord::Migration[7.1]
       t.string :link
       t.string :bio
       t.string :description
+      t.boolean :proverb, null: false, default: false
+      t.boolean :bible, null: false, default: false
       t.boolean :active, null: false, default: true
       t.boolean :verified, null: false, default: false
-      t.string :external_id, null: false, index: { unique: true }, default: 'uuid_generate_v7()'
-      t.string :source_id, null: false, index: { unique: true }
+      t.uuid :external_id, null: false, index: { unique: true }, default: 'uuid_generate_v7()'
+      t.string :source_id, index: { unique: true, where: 'source_id IS NOT NULL' }
+      t.integer :quotes_count, null: false, default: 0
 
       t.timestamps
     end
