@@ -11,6 +11,9 @@ CREATE TABLE public.quotes (
     bible_reference character varying,
     active boolean DEFAULT true NOT NULL,
     verified boolean DEFAULT false NOT NULL,
+    likes_count bigint DEFAULT 0 NOT NULL,
+    shares_count bigint DEFAULT 0 NOT NULL,
+    bookmarks_count bigint DEFAULT 0 NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -50,18 +53,17 @@ CREATE VIEW public.random_quote AS
 SELECT
 	quotes.id,
 	quotes.content,
-	quotes.author_id,
 	quotes.tags,
 	quotes.bible_reference,
-	authors.name,
-	authors.proverb,
-	authors.bible
+	quotes.author_id,
+	authors.name AS author_name,
+	authors.proverb AS author_proverb,
+	authors.bible AS author_bible
 FROM
 	quotes
 	JOIN authors ON quotes.author_id = authors.id
 WHERE
 	quotes.active = TRUE
 ORDER BY
-	random(
-)
+	random()
 LIMIT 1;
