@@ -34,6 +34,11 @@ GRANT ALL ON TABLE "public"."events" TO "anon";
 GRANT ALL ON TABLE "public"."events" TO "authenticated";
 GRANT ALL ON TABLE "public"."events" TO "service_role";
 
+CREATE POLICY "Enable insert for anon users" ON "public"."events"
+AS PERMISSIVE FOR INSERT
+TO anon
+WITH CHECK ((event_type = 1) AND ((resource_type)::text = 'quotes'::text));
+
 --
 -- Name: update_quotes_likes; Type: FUNCTION; Schema: public;
 --
