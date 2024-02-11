@@ -16,26 +16,34 @@ CREATE TABLE public.events (
 --
 -- Name: quotes events_pkey; Type: CONSTRAINT; Schema: public;
 --
-
 ALTER TABLE ONLY public.events
     ADD CONSTRAINT events_pkey PRIMARY KEY (id);
 
 --
 -- Name: index_events_on_event_type; Type: INDEX; Schema: public;
 --
-
 CREATE INDEX index_events_on_event_type ON public.events USING btree (event_type);
+
+--
+-- Security
+--
+ALTER TABLE "public"."events" OWNER TO "postgres";
+ALTER TABLE "public"."events" ENABLE ROW LEVEL SECURITY;
+
+GRANT ALL ON TABLE "public"."events" TO "anon";
+GRANT ALL ON TABLE "public"."events" TO "authenticated";
+GRANT ALL ON TABLE "public"."events" TO "service_role";
 
 --
 -- Name: update_quotes_likes; Type: FUNCTION; Schema: public;
 --
 CREATE OR REPLACE FUNCTION public.update_quotes_likes() RETURNS void AS $$
 BEGIN
-	RAISE NOTICE 'Refreshing all quotes likes...';
-	WITH deleted_events AS (
-		DELETE FROM events WHERE resource_type = 'quotes' AND event_type = 1 RETURNING *),
-		quotes_update AS (
-			SELECT resource_id, SUM(event_count) AS count FROM deleted_events GROUP BY resource_id)
+  RAISE NOTICE 'Refreshing all quotes likes...';
+  WITH deleted_events AS (
+    DELETE FROM events WHERE resource_type = 'quotes' AND event_type = 1 RETURNING *),
+    quotes_update AS (
+      SELECT resource_id, SUM(event_count) AS count FROM deleted_events GROUP BY resource_id)
 
   UPDATE quotes SET likes_count = likes_count + quotes_update.count FROM quotes_update WHERE quotes.id = quotes_update.resource_id;
 RAISE NOTICE 'Done refreshing quotes likes.';
@@ -50,5 +58,4 @@ CREATE EXTENSION IF NOT EXISTS "pg_cron" WITH SCHEMA "extensions";
 --
 -- Name: update_quotes_likes; Type: JOB; Schema: public;
 --
-
 SELECT cron.schedule('update_quotes_likes', '*/15 * * * *', 'SELECT public.update_quotes_likes()');

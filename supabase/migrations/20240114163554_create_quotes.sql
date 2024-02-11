@@ -21,49 +21,65 @@ CREATE TABLE public.quotes (
 --
 -- Name: quotes quotes_pkey; Type: CONSTRAINT; Schema: public;
 --
-
 ALTER TABLE ONLY public.quotes
     ADD CONSTRAINT quotes_pkey PRIMARY KEY (id);
 
 --
 -- Name: index_quotes_on_author_id; Type: INDEX; Schema: public;
 --
-
 CREATE INDEX index_quotes_on_author_id ON public.quotes USING btree (author_id);
 
 --
 -- Name: index_quotes_on_tags; Type: INDEX; Schema: public;
 --
-
 CREATE INDEX index_quotes_on_tags ON public.quotes USING gin (tags);
 
 --
--- Name: quotes fk_rails_3d9d6db8c2; Type: FK CONSTRAINT; Schema: public;
+-- Name: quotes fk_3d9d6db8c2; Type: FK CONSTRAINT; Schema: public;
 --
-
 ALTER TABLE ONLY public.quotes
-    ADD CONSTRAINT fk_rails_3d9d6db8c2 FOREIGN KEY (author_id) REFERENCES public.authors(id);
+    ADD CONSTRAINT fk__3d9d6db8c2 FOREIGN KEY (author_id) REFERENCES public.authors(id);
 
+--
+-- Security
+--
+ALTER TABLE "public"."quotes" OWNER TO "postgres";
+ALTER TABLE "public"."quotes" ENABLE ROW LEVEL SECURITY;
+
+GRANT ALL ON TABLE "public"."quotes" TO "anon";
+GRANT ALL ON TABLE "public"."quotes" TO "authenticated";
+GRANT ALL ON TABLE "public"."quotes" TO "service_role";
 
 --
 -- Name: random_quote; Type: View; Schema: public;
 --
-
 CREATE VIEW public.random_quote AS
 SELECT
-	quotes.id,
-	quotes.content,
-	quotes.tags,
-	quotes.bible_reference,
-	quotes.author_id,
-	authors.name AS author_name,
-	authors.proverb AS author_proverb,
-	authors.bible AS author_bible
+  quotes.id,
+  quotes.content,
+  quotes.tags,
+  quotes.bible_reference,
+  quotes.author_id,
+  authors.name AS author_name,
+  authors.proverb AS author_proverb,
+  authors.bible AS author_bible,
+  quotes.likes_count,
+  quotes.shares_count,
+  quotes.bookmarks_count
 FROM
-	quotes
-	JOIN authors ON quotes.author_id = authors.id
+  quotes
+  JOIN authors ON quotes.author_id = authors.id
 WHERE
-	quotes.active = TRUE
+  quotes.active = TRUE
 ORDER BY
-	random()
+  random()
 LIMIT 1;
+
+--
+-- Security
+--
+ALTER TABLE "public"."random_quote" OWNER TO "postgres";
+
+GRANT ALL ON TABLE "public"."random_quote" TO "anon";
+GRANT ALL ON TABLE "public"."random_quote" TO "authenticated";
+GRANT ALL ON TABLE "public"."random_quote" TO "service_role";

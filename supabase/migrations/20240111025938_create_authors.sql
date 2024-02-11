@@ -1,14 +1,11 @@
 --
 -- Name: pgcrypto; Type: EXTENSION; Schema: -;
 --
-
 CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
-
 
 --
 -- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -;
 --
-
 COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 --
@@ -36,12 +33,20 @@ CREATE TABLE public.authors (
 --
 -- Name: authors authors_pkey; Type: CONSTRAINT; Schema: public;
 --
-
 ALTER TABLE ONLY public.authors
     ADD CONSTRAINT authors_pkey PRIMARY KEY (id);
 
 --
 -- Name: index_authors_on_slug; Type: INDEX; Schema: public; Owner: oz
 --
-
 CREATE UNIQUE INDEX index_authors_on_slug ON public.authors USING btree (slug);
+
+--
+-- Security
+--
+ALTER TABLE "public"."authors" OWNER TO "postgres";
+ALTER TABLE "public"."authors" ENABLE ROW LEVEL SECURITY;
+
+GRANT ALL ON TABLE "public"."authors" TO "anon";
+GRANT ALL ON TABLE "public"."authors" TO "authenticated";
+GRANT ALL ON TABLE "public"."authors" TO "service_role";

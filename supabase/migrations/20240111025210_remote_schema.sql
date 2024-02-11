@@ -28,49 +28,11 @@ SET default_tablespace = '';
 
 SET default_table_access_method = "heap";
 
-CREATE TABLE IF NOT EXISTS "public"."quotes_en" (
-    "id" uuid DEFAULT gen_random_uuid() NOT NULL,
-    "quote" text NOT NULL,
-    "author" character varying NOT NULL,
-    "category" character varying NOT NULL,
-    "active" boolean DEFAULT false NOT NULL,
-    "verified" boolean DEFAULT false NOT NULL,
-    "external_uuid" uuid DEFAULT gen_random_uuid() NOT NULL,
-    "inserted_at" timestamp with time zone DEFAULT now() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT now() NOT NULL
-);
-
-ALTER TABLE "public"."quotes_en" OWNER TO "postgres";
-
-CREATE OR REPLACE VIEW "public"."random_quote_en" AS
- SELECT quotes_en.id,
-    quotes_en.quote,
-    quotes_en.author
-   FROM public.quotes_en
-  WHERE (quotes_en.active = true)
-  ORDER BY (random())
- LIMIT 1;
-
-ALTER TABLE "public"."random_quote_en" OWNER TO "postgres";
-
-ALTER TABLE ONLY "public"."quotes_en"
-    ADD CONSTRAINT "quotes-en_pkey" PRIMARY KEY ("id");
-
-ALTER TABLE "public"."quotes_en" ENABLE ROW LEVEL SECURITY;
-
 REVOKE USAGE ON SCHEMA "public" FROM PUBLIC;
 GRANT USAGE ON SCHEMA "public" TO "postgres";
 GRANT USAGE ON SCHEMA "public" TO "anon";
 GRANT USAGE ON SCHEMA "public" TO "authenticated";
 GRANT USAGE ON SCHEMA "public" TO "service_role";
-
-GRANT ALL ON TABLE "public"."quotes_en" TO "anon";
-GRANT ALL ON TABLE "public"."quotes_en" TO "authenticated";
-GRANT ALL ON TABLE "public"."quotes_en" TO "service_role";
-
-GRANT ALL ON TABLE "public"."random_quote_en" TO "anon";
-GRANT ALL ON TABLE "public"."random_quote_en" TO "authenticated";
-GRANT ALL ON TABLE "public"."random_quote_en" TO "service_role";
 
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "postgres";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "anon";
