@@ -2,13 +2,14 @@ require 'net/http'
 
 class QuotableJob < ApplicationJob
   BASE_URL = 'https://api.quotable.io'
+  # [ all, mittal, quotable, manann ]
+  # https://florinbobis-quotes-net.hf.space/swagger/index.html
 
   queue_as :default
 
   def perform(*args)
-    fetch_data_for 'authors'
+    # fetch_data_for 'authors'
     fetch_data_for 'quotes'
-    # fetch_data_for 'tags'
   end
 
   private
@@ -48,12 +49,13 @@ class QuotableJob < ApplicationJob
     record = Quote.find_or_initialize_by(source_id: quote['_id'])
     record.content = quote['content']
     record.author = author
-    record.tags = quote['tags']
+    record.categories_list = quote['tags']
+    record.categories_slug = quote['tags'].map(&:parameterize)
     record.external_id = UUID7.generate if record.new_record?
     record.save!
   end
 
-  def build_uri(content, page: 1, limit: 150)
+  def build_uri(content, page: 1, limit: 100)
     url = "#{BASE_URL}/#{content}"
     params = { page: page, limit: limit }
     uri = URI.parse(url)
@@ -64,6 +66,7 @@ class QuotableJob < ApplicationJob
   def fetch_data(uri)
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
     request = Net::HTTP::Get.new(uri.request_uri)
     response = http.request(request)

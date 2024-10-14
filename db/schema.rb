@@ -10,11 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_09_222809) do
+ActiveRecord::Schema[8.0].define(version: 2024_10_13_221418) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_uuidv7"
   enable_extension "pgcrypto"
-  enable_extension "plpgsql"
 
   create_table "authors", id: :uuid, default: -> { "uuid_generate_v7()" }, force: :cascade do |t|
     t.string "name", null: false
@@ -37,10 +37,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_09_222809) do
     t.index ["source_id"], name: "index_authors_on_source_id", unique: true, where: "(source_id IS NOT NULL)"
   end
 
+  create_table "categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.string "description"
+    t.boolean "active", default: true, null: false
+    t.integer "quotes_count", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_categories_on_slug", unique: true
+  end
+
   create_table "quotes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "content", null: false
     t.uuid "author_id", null: false
-    t.string "tags", default: [], array: true
+    t.string "categories_slug", default: [], array: true
     t.string "bible_reference"
     t.boolean "active", default: true, null: false
     t.boolean "verified", default: false, null: false
@@ -49,9 +60,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_09_222809) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["author_id"], name: "index_quotes_on_author_id"
+    t.index ["categories_slug"], name: "index_quotes_on_categories_slug", using: :gin
     t.index ["external_id"], name: "index_quotes_on_external_id", unique: true
     t.index ["source_id"], name: "index_quotes_on_source_id", unique: true, where: "(source_id IS NOT NULL)"
-    t.index ["tags"], name: "index_quotes_on_tags", using: :gin
   end
 
   add_foreign_key "quotes", "authors"

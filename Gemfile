@@ -1,8 +1,9 @@
 source 'https://rubygems.org'
 
-ruby '3.3.0'
+ruby '3.3.5'
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem 'rails', github: 'rails/rails', branch: 'main'
+# gem 'rails', github: 'rails/rails', branch: 'main'
+gem 'rails', '8.0.0.beta1'
 
 # Drivers
 gem 'pg'
@@ -59,6 +60,7 @@ group :development, :test do
   gem 'brakeman', require: false
   gem 'debug'
   gem 'faker', require: false
+  gem 'pry', github: 'pry/pry'
   gem 'pry-rails'
   gem 'rubocop-rails-omakase', require: false
 end
