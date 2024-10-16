@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/pry/pry.git
-  revision: b35e0f02a6e68ccde45e3699c8505e25a5cdf271
+  revision: 172317545a92075e6b59838bdc5e9115ad4c7209
   specs:
     pry (0.14.2)
       coderay (~> 1.1)
@@ -227,7 +227,7 @@ GEM
     puma (6.4.3)
       nio4r (~> 2.0)
     racc (1.8.1)
-    rack (3.1.7)
+    rack (3.1.8)
     rack-protection (4.0.0)
       base64 (>= 0.1.0)
       rack (>= 3.0.0, < 4)
@@ -347,9 +347,6 @@ GEM
     thor (1.3.2)
     tilt (2.4.0)
     timeout (0.4.1)
-    torque-postgresql (3.4.0)
-      pg (>= 1.2)
-      rails (>= 7.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.6.0)
@@ -410,7 +407,6 @@ DEPENDENCIES
   rubocop-rails-omakase
   selenium-webdriver
   stimulus-rails
-  torque-postgresql (~> 3.4)
   turbo-rails!
   uuid7
   web-console

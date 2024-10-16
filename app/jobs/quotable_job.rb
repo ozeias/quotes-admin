@@ -2,13 +2,11 @@ require 'net/http'
 
 class QuotableJob < ApplicationJob
   BASE_URL = 'https://api.quotable.io'
-  # [ all, mittal, quotable, manann ]
-  # https://florinbobis-quotes-net.hf.space/swagger/index.html
 
   queue_as :default
 
   def perform(*args)
-    # fetch_data_for 'authors'
+    fetch_data_for 'authors'
     fetch_data_for 'quotes'
   end
 

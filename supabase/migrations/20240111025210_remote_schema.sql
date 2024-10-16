@@ -29,10 +29,15 @@ SET default_tablespace = '';
 SET default_table_access_method = "heap";
 
 REVOKE USAGE ON SCHEMA "public" FROM PUBLIC;
+REVOKE USAGE ON SCHEMA "public" FROM anon;
+REVOKE ALL ON ALL TABLES IN SCHEMA "public" FROM anon;
+
+-- REVOKE USAGE ON SCHEMA "public" FROM authenticated;
+-- REVOKE ALL ON ALL TABLES IN SCHEMA "public" FROM authenticated;
+
 GRANT USAGE ON SCHEMA "public" TO "postgres";
-GRANT USAGE ON SCHEMA "public" TO "anon";
-GRANT USAGE ON SCHEMA "public" TO "authenticated";
 GRANT USAGE ON SCHEMA "public" TO "service_role";
+GRANT USAGE ON SCHEMA "public" TO "authenticated";
 
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "postgres";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "anon";

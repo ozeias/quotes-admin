@@ -7,6 +7,9 @@ class CreateAuthors < ActiveRecord::Migration[7.1]
       t.string :link
       t.string :bio
       t.string :description
+      t.string :gender
+      t.string :genres, array: true, default: [], index: { using: 'gin' }
+      t.string :birthplace
       t.boolean :proverb, null: false, default: false
       t.boolean :bible, null: false, default: false
       t.boolean :active, null: false, default: true

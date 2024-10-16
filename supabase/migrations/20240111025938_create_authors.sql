@@ -21,6 +21,9 @@ CREATE TABLE public.authors (
     link character varying,
     bio character varying,
     description character varying,
+    gender character varying,
+    genres character varying[] DEFAULT '{}'::character varying[],
+    birthplace character varying,
     proverb boolean DEFAULT false NOT NULL,
     bible boolean DEFAULT false NOT NULL,
     active boolean DEFAULT true NOT NULL,
@@ -42,11 +45,22 @@ ALTER TABLE ONLY public.authors
 CREATE UNIQUE INDEX index_authors_on_slug ON public.authors USING btree (slug);
 
 --
+-- Name: index_authors_on_genres; Type: INDEX; Schema: public; Owner: oz
+--
+CREATE INDEX index_authors_on_genres ON public.authors USING gin (genres);
+
+--
 -- Security
 --
 ALTER TABLE "public"."authors" OWNER TO "postgres";
 ALTER TABLE "public"."authors" ENABLE ROW LEVEL SECURITY;
 
-GRANT ALL ON TABLE "public"."authors" TO "anon";
+-- GRANT ALL ON TABLE "public"."authors" TO "anon";
 GRANT ALL ON TABLE "public"."authors" TO "authenticated";
 GRANT ALL ON TABLE "public"."authors" TO "service_role";
+
+
+CREATE POLICY "Enable read access for authenticated users" ON "public"."authors"
+AS PERMISSIVE FOR SELECT
+TO authenticated
+USING (true);

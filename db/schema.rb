@@ -23,6 +23,9 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_13_221418) do
     t.string "link"
     t.string "bio"
     t.string "description"
+    t.string "gender"
+    t.string "genres", default: [], array: true
+    t.string "birthplace"
     t.boolean "proverb", default: false, null: false
     t.boolean "bible", default: false, null: false
     t.boolean "active", default: true, null: false
@@ -33,6 +36,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_10_13_221418) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["external_id"], name: "index_authors_on_external_id", unique: true
+    t.index ["genres"], name: "index_authors_on_genres", using: :gin
     t.index ["slug"], name: "index_authors_on_slug", unique: true
     t.index ["source_id"], name: "index_authors_on_source_id", unique: true, where: "(source_id IS NOT NULL)"
   end
